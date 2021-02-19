@@ -21,9 +21,9 @@ def print_header
   puts "-------------"
 end
 def print(students)
-  # 2. Modify your program to only print the students whose name begins with a specific letter.
+  # 3. Modify your program to only print the students whose name is shorter than 12 characters.
   students.each do |student|
-    if student[:name][0] == 'M'
+    if student[:name].length < 12 
       puts "#{student[:name]} (#{student[:cohort]} cohort)"
     end
   end
