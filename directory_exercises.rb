@@ -21,8 +21,10 @@ def print_header
   puts "-------------"
 end
 def print(students)
-  students.each do |student|
-    puts "#{student[:name]} (#{student[:cohort]} cohort)"
+  # 1. We're using the each() method to iterate over an array of students. How can you modify the program to print a number before the name
+  # of each student, e.g. "1. Dr. Hannibal Lecter"? Hint: look into each_with_index()
+  students.each_with_index do |student, i|
+    puts "#{i + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
   end
 end
 def print_footer(names)
