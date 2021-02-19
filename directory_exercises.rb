@@ -37,7 +37,7 @@ def print(students)
   # 4. Rewrite the each() method that prints all students
   # using while or until control flow methods (Loops).
   num = 0
-  while num < students.length
+  until num == students.length do
     puts "#{students[num][:name]} (#{students[num][:cohort]} cohort)"
     num += 1
   end
