@@ -45,8 +45,10 @@ def print(students)
     puts "#{student[:name]} (#{student[:cohort].capitalize} cohort)".center(200, " ")
   end
 end
+# Right now if we have only one student, the user will see a message "Now we have 1 students", whereas it should be
+# "Now we have 1 student". How can you fix it so that it used singular form when appropriate and plural form otherwise?
 def print_footer(names)
-  puts "Overall, we have #{names.count} great students".center(200, " ")
+  puts  "Overall, we have #{names.count} great #{names.count == 1 ? "student" : "students"}".center(200, " ")
 end
 # Nothing happens until we actually call the methods:
 students = input_student
