@@ -30,17 +30,19 @@ students = [
   {name: "Joffrey Baratheon", cohort: :november, hobby: "being a dick"},
   {name: "Norman Bates", cohort: :november, hobby: "spending time with family"}
 ]
+# 6. Research how the method center() of the String class works. Use it in your code
+# to make the output beautifully aligned.
 def print_header
-  puts "The students of Villains Academy"
-  puts "-------------"
+  puts "The students of Villains Academy".center(200, " ")
+  puts "-------------".center(200, " ")
 end
 def print(students)
   students.each do |student|
-    puts "#{student[:name]} (#{student[:cohort]} cohort), who likes #{student[:hobby]}"
+    puts "#{student[:name]} (#{student[:cohort]} cohort), who likes #{student[:hobby]}".center(200, " ")
   end
 end
 def print_footer(names)
-  puts "Overall, we have #{names.count} great students"
+  puts "Overall, we have #{names.count} great students".center(200, " ")
 end
 # Nothing happens until we actually call the methods:
 # students = input_student
