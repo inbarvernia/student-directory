@@ -69,6 +69,10 @@ end
 # Nothing happens until we actually call the methods:
 students = input_student
 students_by_cohort = sort_students(students)
-print_header
-print(students_by_cohort)
-print_footer(students)
+# 12. What happens if the user doesn't enter any students? It will try to print an empty list.
+# How can you use an if statement (Control Flow) to only print the list if there is at least one student in there?
+if !students.empty?
+  print_header
+  print(students_by_cohort)
+  print_footer(students)
+end
