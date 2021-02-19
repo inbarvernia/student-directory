@@ -17,29 +17,26 @@
 #   students
 # end
 students = [
-  {name: "Dr. Hannibal Lecter", cohort: :november},
-  {name: "Darth Vader", cohort: :november},
-  {name: "Nurse Ratched", cohort: :november},
-  {name: "Michael Corleone", cohort: :november},
-  {name: "Alex DeLarge", cohort: :november},
-  {name: "The Wicked Witch of the West", cohort: :november},
-  {name: "Terminator", cohort: :november},
-  {name: "Freddy Krueger", cohort: :november},
-  {name: "The Joker", cohort: :november},
-  {name: "Joffrey Baratheon", cohort: :november},
-  {name: "Norman Bates", cohort: :november}
+  # 5. Our code only works with the student name and cohort. Add more information: hobbies, country of birth, height, etc.
+  {name: "Dr. Hannibal Lecter", cohort: :november, hobby: "cooking"},
+  {name: "Darth Vader", cohort: :november, hobby: "using the Force"},
+  {name: "Nurse Ratched", cohort: :november, hobby: "caring for others"},
+  {name: "Michael Corleone", cohort: :november, hobby: "making people offers they can't refuse"},
+  {name: "Alex DeLarge", cohort: :november, hobby: "a bit of the old ultra-violence"},
+  {name: "The Wicked Witch of the West", cohort: :november, hobby: "flying"},
+  {name: "Terminator", cohort: :november, hobby: "terminating"},
+  {name: "Freddy Krueger", cohort: :november, hobby: "making new friends"},
+  {name: "The Joker", cohort: :november, hobby: "practical jokes"},
+  {name: "Joffrey Baratheon", cohort: :november, hobby: "being a dick"},
+  {name: "Norman Bates", cohort: :november, hobby: "spending time with family"}
 ]
 def print_header
   puts "The students of Villains Academy"
   puts "-------------"
 end
 def print(students)
-  # 4. Rewrite the each() method that prints all students
-  # using while or until control flow methods (Loops).
-  num = 0
-  until num == students.length do
-    puts "#{students[num][:name]} (#{students[num][:cohort]} cohort)"
-    num += 1
+  students.each do |student|
+    puts "#{student[:name]} (#{student[:cohort]} cohort), who likes #{student[:hobby]}"
   end
 end
 def print_footer(names)
