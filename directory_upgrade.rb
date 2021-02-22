@@ -1,34 +1,55 @@
 @students = [] # an empty array accessible to all methods
 
-def input_students
+def input_instructions
   puts "Please enter student name to add and hit return."
-  puts "Then, enter that student's cohort and hit return."
+  puts "Then, enter that student's cohort month and hit return."
   puts "To finish, simply hit return without adding text."
-  # create list of possible cohorts
-  cohorts = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
+end
+
+# create list of possible cohorts
+@cohorts = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
+
+def input_cohort
+  # get cohort
+  @cohort = gets.chomp.downcase.to_sym
+  # check whether user has input an real cohort (or made a typo/input some other value)
+  while !@cohorts.include?(@cohort)
+    # set default to current cohort in case field is left empty
+    # in a real-world scenario it would make more sense to have a separate varaible to store current cohort
+    if @cohort.empty?
+      @cohort = :march
+      break
+    end
+    puts "Invalid cohort entered. Enter a valid month name: "
+    @cohort = gets.chomp.downcase.to_sym
+  end
+end
+
+def input_students
+  input_instructions
   # get the first name
   name = gets.chomp
   # while the name is not empty, repeat this code
   while !name.empty? do
-  # get cohort
-    cohort = gets.chomp.downcase.to_sym
-    # check whether user has input an real cohort (or made a typo/input some other value)
-    while !cohorts.include?(cohort)
-      # set default to current cohort in case field is left empty
-      # in a real-world scenario it would make more sense to have a separate varaible to store current cohort
-      if cohort.empty?
-        cohort = :march
-        break
-      end
-      puts "Invalid cohort entered. Enter a valid month name: "
-      cohort = gets.chomp.downcase.to_sym
-    end
+    input_cohort
     # add the student hash to the array
-    @students << {name: name, cohort: cohort}
+    @students << {name: name, cohort: @cohort}
     puts "Now we have #{@students.count} students"
     # get another name from the user
     name = gets.chomp
   end
+end
+
+def save_students
+  # open the file for writing
+  file = File.open("students.csv", "w")
+  # iterate over the array of students
+  @students.each do |student|
+    student_data = [student[:name], student[:cohort]]
+    csv_line = student_data.join(",")
+    file.puts csv_line
+  end
+  file.close
 end
 
 def interactive_menu
