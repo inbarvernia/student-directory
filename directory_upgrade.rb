@@ -51,7 +51,6 @@ def load_students(filename = "students.csv")
   file.close
 end
 
-# 2. How could you make the program load students.csv by default if no file is given on startup? Which methods would you need to change?
 def try_load_students
   ARGV.first.nil? ? filename = "students.csv" : filename = ARGV.first
   if File.exists?(filename)
@@ -89,18 +88,24 @@ def print_menu
   puts "4. Load the list from students.csv"
   puts "9. Exit"
 end
-
+# 4. Right now, when the user choses an option from our menu, there's no way of them knowing if the action was successful.
+# Can you fix this and implement feedback messages for the user?
 def process(selection)
   case selection
     when 1
+      puts "Inputting students: "
       input_students
     when 2
+      puts "Listing students: "
       show_students
     when 3
       save_students
+      puts "List saved to students.csv"
     when 4
       load_students
+      puts "List loaded from students.csv"
     when 9
+      puts "Exiting program"
       exit # this will cause the program to terminate
     else
       puts "Command not recognised, please try again"
