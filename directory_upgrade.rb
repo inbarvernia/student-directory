@@ -39,6 +39,29 @@ def input_students
     name = STDIN.gets.chomp
   end
 end
+# 1. After we added the code to load the students from file, we ended up with adding the students to @students in two places. The lines in load_students()
+# and input_students() are almost the same. This violates the DRY (Don't Repeat Yourself) principle. How can you extract them into a method to fix this problem?
+
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
+  file.readlines.each do |line|
+    name, cohort = line.chomp.split(",")
+    @students << {name: name, cohort: cohort.to_sym}
+  end
+  file.close
+end
+
+# 2. How could you make the program load students.csv by default if no file is given on startup? Which methods would you need to change?
+def try_load_students
+  ARGV.first.nil? ? filename = "students.csv" : filename = ARGV.first
+  if File.exists?(filename)
+    load_students(filename)
+    puts "Loaded #{@students.count} from #{filename}"
+  else # if there is no file by that name
+    puts "Sorry, #{filename} doesn't exist"
+    exit # quits the program
+  end
+end
 
 def save_students
   # open the file for writing
@@ -50,27 +73,6 @@ def save_students
     file.puts csv_line
   end
   file.close
-end
-
-def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-    name, cohort = line.chomp.split(",")
-    @students << {name: name, cohort: cohort.to_sym}
-  end
-  file.close
-end
-
-def try_load_students
-  filename = ARGV.first # first argument from the command line
-  return if filename.nil? # get out of the method if it isn't given
-  if File.exists?(filename) #if there's a file by that name
-    load_students(filename)
-    puts "Loaded #{@students.count} from #{filename}"
-  else # if there is no file by that name
-    puts "Sorry, #{filename} doesn't exist"
-    exit # quits the program
-  end
 end
 
 def interactive_menu
