@@ -11,7 +11,7 @@ end
 
 def input_cohort
   # get cohort
-  @cohort = gets.chomp.downcase.to_sym
+  @cohort = STDIN.gets.chomp.downcase.to_sym
   # check whether user has input an real cohort (or made a typo/input some other value)
   while !@cohorts.include?(@cohort)
     # set default to current cohort in case field is left empty
@@ -21,14 +21,14 @@ def input_cohort
       break
     end
     puts "Invalid cohort entered. Enter a valid month name: "
-    @cohort = gets.chomp.downcase.to_sym
+    @cohort = STDIN.gets.chomp.downcase.to_sym
   end
 end
 
 def input_students
   input_instructions
   # get the first name
-  name = gets.chomp
+  name = STDIN.gets.chomp
   # while the name is not empty, repeat this code
   while !name.empty? do
     input_cohort
@@ -36,7 +36,7 @@ def input_students
     @students << {name: name, cohort: @cohort}
     puts "Now we have #{@students.count} students"
     # get another name from the user
-    name = gets.chomp
+    name = STDIN.gets.chomp
   end
 end
 
@@ -52,8 +52,8 @@ def save_students
   file.close
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort = line.chomp.split(",")
     @students << {name: name, cohort: cohort.to_sym}
@@ -61,10 +61,22 @@ def load_students
   file.close
 end
 
+def try_load_students
+  filename = ARGV.first # first argument from the command line
+  return if filename.nil? # get out of the method if it isn't given
+  if File.exists?(filename) #if there's a file by that name
+    load_students(filename)
+    puts "Loaded #{@students.count} from #{filename}"
+  else # if there is no file by that name
+    puts "Sorry, #{filename} doesn't exist"
+    exit # quits the program
+  end
+end
+
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp.to_i)
+    process(STDIN.gets.chomp.to_i)
   end
 end
 
@@ -118,4 +130,5 @@ def show_students
   end
 end
 
+try_load_students
 interactive_menu
