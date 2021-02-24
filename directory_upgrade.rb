@@ -42,29 +42,45 @@ end
 # 1. After we added the code to load the students from file, we ended up with adding the students to @students in two places. The lines in load_students()
 # and input_students() are almost the same. This violates the DRY (Don't Repeat Yourself) principle. How can you extract them into a method to fix this problem?
 
-def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-    name, cohort = line.chomp.split(",")
-    @students << {name: name, cohort: cohort.to_sym}
-  end
-  file.close
+# 5. The filename we use to save and load data (menu items 3 and 4) is
+# hardcoded. Make the script more flexible by asking for the filename if the
+# user chooses these menu items.
+
+# creating a filename variable that can be accessed from multiple methods:
+@filename = String.new
+
+def file_to_load
+  puts "Enter the file you would like to load from: "
+  @filename = STDIN.gets.chomp
+  load_students(@filename)
 end
 
-def try_load_students
-  ARGV.first.nil? ? filename = "students.csv" : filename = ARGV.first
-  if File.exists?(filename)
-    load_students(filename)
-    puts "Loaded #{@students.count} from #{filename}"
-  else # if there is no file by that name
-    puts "Sorry, #{filename} doesn't exist"
-    exit # quits the program
+def load_students(filename = "students.csv")
+  if File.exists?(@filename)
+    @students = [] # deleting students previously loaded from other files or manually entered
+    file = File.open(@filename, "r")
+    file.readlines.each do |line|
+      name, cohort = line.chomp.split(",")
+      @students << {name: name, cohort: cohort.to_sym}
+    end
+    file.close
+    puts "Loaded #{@students.count} from #{@filename}"
+  else
+    puts "Sorry, #{@filename} doesn't exist"
+    file_to_load
   end
+end
+
+def load_on_startup
+  ARGV.first.nil? ? @filename = "students.csv" : @filename = ARGV.first
+  load_students(@filename)
 end
 
 def save_students
+  puts "Enter the file you would like to save to: "
+  @filename = STDIN.gets.chomp
   # open the file for writing
-  file = File.open("students.csv", "w")
+  file = File.open(@filename, "w")
   # iterate over the array of students
   @students.each do |student|
     student_data = [student[:name], student[:cohort]]
@@ -72,6 +88,7 @@ def save_students
     file.puts csv_line
   end
   file.close
+  puts "List saved to #{@filename}"
 end
 
 def interactive_menu
@@ -84,26 +101,21 @@ end
 def print_menu
   puts "1. Input students"
   puts "2. Show list of students"
-  puts "3. Save the list to students.csv"
-  puts "4. Load the list from students.csv"
+  puts "3. Save the list to a file"
+  puts "4. Load the list from a file"
   puts "9. Exit"
 end
-# 4. Right now, when the user choses an option from our menu, there's no way of them knowing if the action was successful.
-# Can you fix this and implement feedback messages for the user?
+
 def process(selection)
   case selection
     when 1
-      puts "Inputting students: "
       input_students
     when 2
-      puts "Listing students: "
       show_students
     when 3
       save_students
-      puts "List saved to students.csv"
     when 4
-      load_students
-      puts "List loaded from students.csv"
+      file_to_load
     when 9
       puts "Exiting program"
       exit # this will cause the program to terminate
@@ -137,5 +149,5 @@ def show_students
   end
 end
 
-try_load_students
+load_on_startup
 interactive_menu
