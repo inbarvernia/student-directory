@@ -11,17 +11,17 @@ end
 
 def input_cohort
   # get cohort
-  @cohort = STDIN.gets.chomp.downcase.to_sym
+  @cohort = STDIN.gets.chomp.downcase
   # check whether user has input an real cohort (or made a typo/input some other value)
-  while !@cohorts.include?(@cohort)
+  while !@cohorts.include?(@cohort.to_sym)
     # set default to current cohort in case field is left empty
     # in a real-world scenario it would make more sense to have a separate varaible to store current cohort
     if @cohort.empty?
-      @cohort = :march
+      @cohort = "march"
       break
     end
     puts "Invalid cohort entered. Enter a valid month name: "
-    @cohort = STDIN.gets.chomp.downcase.to_sym
+    @cohort = STDIN.gets.chomp.downcase
   end
 end
 
@@ -33,18 +33,21 @@ def input_students
   while !name.empty? do
     input_cohort
     # add the student hash to the array
-    @students << {name: name, cohort: @cohort}
+    add_student(name, @cohort)
     puts "Now we have #{@students.count} students"
     # get another name from the user
     name = STDIN.gets.chomp
   end
 end
-# 1. After we added the code to load the students from file, we ended up with adding the students to @students in two places. The lines in load_students()
-# and input_students() are almost the same. This violates the DRY (Don't Repeat Yourself) principle. How can you extract them into a method to fix this problem?
+# 1. After we added the code to load the students from file, we ended up
+# with adding the students to @students in two places. The lines in
+# load_students() and input_students() are almost the same. This violates
+# the DRY (Don't Repeat Yourself) principle. How can you extract them into a
+# method to fix this problem?
 
-# 5. The filename we use to save and load data (menu items 3 and 4) is
-# hardcoded. Make the script more flexible by asking for the filename if the
-# user chooses these menu items.
+def add_student(name, cohort)
+  @students << {name: name, cohort: cohort.to_sym}
+end
 
 # creating a filename variable that can be accessed from multiple methods:
 @filename = String.new
@@ -61,7 +64,7 @@ def load_students(filename = "students.csv")
     file = File.open(@filename, "r")
     file.readlines.each do |line|
       name, cohort = line.chomp.split(",")
-      @students << {name: name, cohort: cohort.to_sym}
+      add_student(name, cohort)
     end
     file.close
     puts "Loaded #{@students.count} from #{@filename}"
