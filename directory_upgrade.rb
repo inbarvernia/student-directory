@@ -58,15 +58,19 @@ def file_to_load
   load_students(@filename)
 end
 
+# 6. We are opening and closing the files manually. Read the documentation of
+# the File class to find out how to use a code block (do...end) to access a
+# file, so that we didn't have to close it explicitly (it will be closed
+# automatically when the block finishes). Refactor the code to use a
+# code block.
+
 def load_students(filename = "students.csv")
   if File.exists?(@filename)
     @students = [] # deleting students previously loaded from other files or manually entered
-    file = File.open(@filename, "r")
-    file.readlines.each do |line|
+    File.open(@filename, "r") { |file| file.readlines.each do |line|
       name, cohort = line.chomp.split(",")
       add_student(name, cohort)
-    end
-    file.close
+    end }
     puts "Loaded #{@students.count} from #{@filename}"
   else
     puts "Sorry, #{@filename} doesn't exist"
@@ -83,14 +87,11 @@ def save_students
   puts "Enter the file you would like to save to: "
   @filename = STDIN.gets.chomp
   # open the file for writing
-  file = File.open(@filename, "w")
-  # iterate over the array of students
-  @students.each do |student|
+  File.open(@filename, "w") { |file|   @students.each do |student|
     student_data = [student[:name], student[:cohort]]
     csv_line = student_data.join(",")
     file.puts csv_line
-  end
-  file.close
+  end }
   puts "List saved to #{@filename}"
 end
 
