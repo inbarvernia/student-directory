@@ -1,3 +1,5 @@
+require 'csv'
+
 @students = [] # an empty array accessible to all methods
 
 def input_instructions
@@ -39,11 +41,6 @@ def input_students
     name = STDIN.gets.chomp
   end
 end
-# 1. After we added the code to load the students from file, we ended up
-# with adding the students to @students in two places. The lines in
-# load_students() and input_students() are almost the same. This violates
-# the DRY (Don't Repeat Yourself) principle. How can you extract them into a
-# method to fix this problem?
 
 def add_student(name, cohort)
   @students << {name: name, cohort: cohort.to_sym}
@@ -58,19 +55,17 @@ def file_to_load
   load_students(@filename)
 end
 
-# 6. We are opening and closing the files manually. Read the documentation of
-# the File class to find out how to use a code block (do...end) to access a
-# file, so that we didn't have to close it explicitly (it will be closed
-# automatically when the block finishes). Refactor the code to use a
-# code block.
+# 7. We are de-facto using CSV format to store data. However, Ruby includes a library to work
+# with the CSV files that we could use instead of working directly with the files. Refactor the
+# code to use this library.
 
 def load_students(filename = "students.csv")
   if File.exists?(@filename)
     @students = [] # deleting students previously loaded from other files or manually entered
-    File.open(@filename, "r") { |file| file.readlines.each do |line|
-      name, cohort = line.chomp.split(",")
+    CSV.foreach(@filename) do |line|
+      name, cohort = line
       add_student(name, cohort)
-    end }
+    end
     puts "Loaded #{@students.count} from #{@filename}"
   else
     puts "Sorry, #{@filename} doesn't exist"
@@ -87,11 +82,11 @@ def save_students
   puts "Enter the file you would like to save to: "
   @filename = STDIN.gets.chomp
   # open the file for writing
-  File.open(@filename, "w") { |file|   @students.each do |student|
-    student_data = [student[:name], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
-  end }
+  CSV.open(@filename, "w") do |csv|
+    @students.each do |student|
+      csv << [student[:name], student[:cohort]]
+    end
+  end
   puts "List saved to #{@filename}"
 end
 
