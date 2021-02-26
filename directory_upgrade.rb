@@ -1,21 +1,21 @@
 require 'csv'
 
 @students = [] # an empty array accessible to all methods
+@filename = "" # a filename variable accessible to all methods
 
 def input_instructions
   puts "Please enter student name to add and hit return."
-  puts "Then, enter that student's cohort month and hit return."
+  puts "Then, enter that student's cohort month and hit return, or leave it blank and press return to default to current cohort."
   puts "To finish, simply hit return without adding text."
 end
-
-# create list of possible cohorts
-@cohorts = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
 
 def input_cohort
   # get cohort
   @cohort = STDIN.gets.chomp.downcase
+  # list of cohorts
+  cohorts = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
   # check whether user has input an real cohort (or made a typo/input some other value)
-  while !@cohorts.include?(@cohort.to_sym)
+  while !cohorts.include?(@cohort.to_sym)
     # set default to current cohort in case field is left empty
     # in a real-world scenario it would make more sense to have a separate varaible to store current cohort
     if @cohort.empty?
@@ -46,35 +46,44 @@ def add_student(name, cohort)
   @students << {name: name, cohort: cohort.to_sym}
 end
 
-# creating a filename variable that can be accessed from multiple methods:
-@filename = String.new
-
 def file_to_load
   puts "Enter the file you would like to load from: "
   @filename = STDIN.gets.chomp
   load_students(@filename)
 end
 
-# 7. We are de-facto using CSV format to store data. However, Ruby includes a library to work
-# with the CSV files that we could use instead of working directly with the files. Refactor the
-# code to use this library.
-
 def load_students(filename = "students.csv")
   if File.exists?(@filename)
     @students = [] # deleting students previously loaded from other files or manually entered
     CSV.foreach(@filename) do |line|
-      name, cohort = line
-      add_student(name, cohort)
+      add_student(*line)
     end
     puts "Loaded #{@students.count} from #{@filename}"
   else
     puts "Sorry, #{@filename} doesn't exist"
-    file_to_load
+    user_choice
+  end
+end
+
+def user_choice
+  puts "Would you like to load a different file?"
+  loop do
+    choice = STDIN.gets.chomp.downcase
+    case choice
+      when "yes"
+        file_to_load
+        break
+      when "no"
+        puts "Loading cancelled"
+        break
+      else puts "Command not recognised; please enter 'yes' or 'no'."
+    end
   end
 end
 
 def load_on_startup
   ARGV.first.nil? ? @filename = "students.csv" : @filename = ARGV.first
+  puts "Loading student list from #{@filename}"
   load_students(@filename)
 end
 
